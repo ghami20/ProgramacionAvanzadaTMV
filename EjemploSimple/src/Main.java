@@ -61,7 +61,7 @@ public class Main {
 
                                 case 1: 
                                 	
-                                    String[] opciones = { "Ver todos los pedidos", "Ver pedido por id", "Salir" };
+                                    String[] opciones = { "Ver todos los pedidos", "Ver pedido por id","Filtrar pedidos", "Salir" };
                                     
                                     int elegido = JOptionPane.showOptionDialog(null,
                                     		"Elija una opción", "", 0, 0, null, opciones, opciones[0]);
@@ -104,7 +104,28 @@ public class Main {
 	                                	    JOptionPane.showMessageDialog(null, encontrado + "\n" + resulta2 + " precio total " + total );
 	                                	    Pedido.editaEstadoDePedido(Integer.parseInt(id));
 										break;
-
+									case 2:
+										String[] filtros = { 
+										"Pagado","En proceso","Enviado"
+										};
+										int filtro = JOptionPane.showOptionDialog(null,
+												"Elija que pedidos quiere ver", "", 0,
+												0, null, filtros, filtros[0]);
+										String filtrados = "";
+	                                	for (Pedido p : pedidos) {
+	                                		if (filtros[filtro].equals(p.getEstado())) {
+												
+				
+		                                		filtrados += "Pedido: " + p.getDescripcion() + " (" + p.getFecha() + ")" + " estado " + p.getEstado() +"\n" ;
+		                                	    
+		                                	    LinkedList<DetallePedido> detalles2 = DetallePedido.obtenerDetallesPorPedido(p.getId());
+		                                	    for (DetallePedido d : detalles2) {
+		                                	    	filtrados += "   - " + d.getDescripcion() + " x" + d.getCantidad() + " Precio unidad" + d.getPrecio()  + " valor " + d.getCantidad() * d.getPrecio()+ "\n";
+		                                	    }
+	                                		}
+	                                	}
+	                                	JOptionPane.showMessageDialog(null, filtrados.isEmpty() ? "No hay pedidos" : filtrados);
+										break;
 									default:
 										break;
 									}
