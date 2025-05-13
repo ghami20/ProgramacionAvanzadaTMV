@@ -39,7 +39,7 @@ public class Main {
                                 case 0: 
                                     String descripcionPedido = JOptionPane.showInputDialog("Descripción del pedido:");
                                     String fecha = JOptionPane.showInputDialog("Fecha (YYYY-MM-DD):");
-                                    Pedido nuevoPedido = new Pedido(0, descripcionPedido, fecha, usuario.getId());
+                                    Pedido nuevoPedido = new Pedido(0, descripcionPedido, fecha, usuario.getId(),"En proceso");
                                     Pedido.agregarPedido(nuevoPedido);
 
                                     LinkedList<Pedido> pedidosActuales = Pedido.obtenerPedidosPorUsuario(usuario.getId());
@@ -50,8 +50,9 @@ public class Main {
                                     while (seguirAgregando == JOptionPane.YES_OPTION) {
                                         String descDetalle = JOptionPane.showInputDialog("Detalle:");
                                         int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Cantidad:"));
+                                        int precio = Integer.parseInt(JOptionPane.showInputDialog("Precio:"));
 
-                                        DetallePedido detalle = new DetallePedido(0, pedidoReciente.getId(), descDetalle, cantidad);
+                                        DetallePedido detalle = new DetallePedido(0, pedidoReciente.getId(), descDetalle, cantidad, precio);
                                         DetallePedido.agregarDetalle(detalle);
 
                                         seguirAgregando = JOptionPane.showConfirmDialog(null, "¿Agregar otro detalle?");
@@ -70,11 +71,11 @@ public class Main {
 									case 0:
 	                                	String resultado = "";
 	                                	for (Pedido p : pedidos) {
-	                                	    resultado += "Pedido: " + p.getDescripcion() + " (" + p.getFecha() + ")\n";
-
+	                                	    resultado += "Pedido: " + p.getDescripcion() + " (" + p.getFecha() + ")" + " estado " + p.getEstado() +"\n" ;
+	                                	    
 	                                	    LinkedList<DetallePedido> detalles = DetallePedido.obtenerDetallesPorPedido(p.getId());
 	                                	    for (DetallePedido d : detalles) {
-	                                	        resultado += "   - " + d.getDescripcion() + " x" + d.getCantidad() + "\n";
+	                                	        resultado += "   - " + d.getDescripcion() + " x" + d.getCantidad() + " Precio unidad" + d.getPrecio()  + " valor " + d.getCantidad() * d.getPrecio()+ "\n";
 	                                	    }
 	                                	}
 	                                	JOptionPane.showMessageDialog(null, resultado.isEmpty() ? "No hay pedidos" : resultado);
@@ -94,12 +95,14 @@ public class Main {
 										//JOptionPane.showMessageDialog(null, "id seleccionado" + descr);
 										Pedido encontrado=	Pedido.obtenerPedidosPorID(Integer.parseInt(id));
 										String resulta2="";
+										int total = 0;
 										 LinkedList<DetallePedido> detalles = DetallePedido.obtenerDetallesPorPedido(encontrado.getId());
 	                                	    for (DetallePedido d : detalles) {
-	                                	    	resulta2 += "   - " + d.getDescripcion() + " x" + d.getCantidad() + "\n";
+	                                	    	resulta2 += "   - " + d.getDescripcion() + " x " + d.getCantidad() + " Precio unidad" + d.getPrecio()  + " valor " + d.getCantidad() * d.getPrecio()+ "\n";
+	                                	    	total = total + d.getCantidad() *d.getPrecio();
 	                                	    }
-	                                	    JOptionPane.showMessageDialog(null, encontrado + "\n" + resulta2 );
-	                                	    
+	                                	    JOptionPane.showMessageDialog(null, encontrado + "\n" + resulta2 + " precio total " + total );
+	                                	    Pedido.editaEstadoDePedido(Integer.parseInt(id));
 										break;
 
 									default:
